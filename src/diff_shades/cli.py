@@ -221,10 +221,19 @@ def main(
     help="Use the same projects (and commits!) used during another analysis."
 )
 @click.option(
-    "-S/-P", "--force-stable-style/--force-preview-style", "force_style",
-    default=None,
-    callback=lambda ctx, p, v: {False: "preview", True: "stable", None: None}[v],
-    help="Forcefully use the stable or preview style for all projects."
+    "-S", "--force-stable-style", "force_style",
+    flag_value="stable",
+    help="Forcefully use the stable style for all projects."
+)
+@click.option(
+    "-P", "--force-preview-style", "force_style",
+    flag_value="preview",
+    help="Forcefully use the preview style for all projects."
+)
+@click.option(
+    "-U", "--force-unstable-style", "force_style",
+    flag_value="unstable",
+    help="Forcefully use the unstable style for all projects."
 )
 @click.option(
     "-v", "--verbose",
@@ -239,7 +248,7 @@ def analyze(
     exclude: Set[str],
     cli_work_dir: Optional[Path],
     repeat_projects_from: Optional[Path],
-    force_style: Optional[Literal["stable", "preview"]],
+    force_style: Optional[Literal["stable", "preview", "unstable"]],
     verbose: int,
 ) -> None:
     """Run Black against 'millions' of LOC and save the results."""
@@ -259,7 +268,16 @@ def analyze(
     elif results_path.exists() and results_path.is_dir():
         raise DSError(f"{results_path} is a pre-existing directory.")
 
-    if force_style:
+    if force_style == "unstable":
+        try:
+            black.FileMode(unstable=True)
+        except TypeError:
+            console.log(
+                "[warning]Installed black doesn't support --unstable, using preview style."
+            )
+            force_style = "preview"
+
+    if force_style == "preview":
         try:
             black.FileMode(preview=True)
         except TypeError:

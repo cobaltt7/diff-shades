@@ -115,9 +115,10 @@ rejected but unsupported options will be silently ignored... except for the
 file discovery options! Those will have an impact and are highly discouraged
 since they'll be applied to all selected projects.
 
-To force the preview or stable style for *all* projects, you can use the
-`-S`/`--force-stable-style` and `-P`/`--force-preview-style` flags. The latter
-should be identical to passing `-- --preview`.
+To force the stable, preview, or unstable style for _all_ projects, you can use
+the `-S`/`--force-stable-style`, `-P`/`--force-preview-style`, or
+`-U`/`--force-unstable-style` flag respectively. The latter two should be identical
+to passing `-- --preview` or `-- --unstable`.
 
 Passing `-v` / `--verbose` once will cause project revision information to be
 logged, twice and the result of each file will be emitted. Be warned the latter

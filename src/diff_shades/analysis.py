@@ -79,7 +79,7 @@ def get_commit(repo: Path) -> Tuple[CommitSHA, CommitMsg]:
 def setup_projects(
     projects: List[Project],
     workdir: Path,
-    force_style: Optional[Literal["stable", "preview"]],
+    force_style: Optional[Literal["stable", "preview", "unstable"]],
     extra_args: Sequence[str],
     progress: rich.progress.Progress,
     task: rich.progress.TaskID,
@@ -149,7 +149,7 @@ def _find_black_reformat_many() -> str:
 def get_files_and_mode(
     project: Project,
     path: Path,
-    force_style: Optional[Literal["stable", "preview"]] = None,
+    force_style: Optional[Literal["stable", "preview", "unstable"]] = None,
     extra_args: Sequence[str] = (),
 ) -> Tuple[List[Path], "black.Mode"]:
     # HACK: I know this is hacky but the benefit is I don't need to copy and
@@ -195,7 +195,11 @@ def get_files_and_mode(
     assert files and isinstance(mode, black.FileMode), (files, mode)
     if force_style:
         with suppress_output():
-            mode = replace(mode, preview=(force_style == "preview"))
+            mode = replace(
+                mode,
+                preview=(force_style in ("preview", "unstable")),
+                unstable=(force_style == "unstable"),
+            )
 
     return sorted(p for p in files if p.suffix in (".py", ".pyi")), mode
 

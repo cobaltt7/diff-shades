@@ -193,14 +193,20 @@ class TestAnalysis:
     @pytest.mark.skipif(
         not hasattr(black.Mode(), "preview"), reason="current black doesn't support --preview"
     )
-    @pytest.mark.parametrize("flag", [None, "stable", "preview"])
+    @pytest.mark.parametrize(
+        "flag",
+        [None, "stable", "preview"]
+        + (["unstable"] if hasattr(black.Mode(), "unstable") else []),
+    )
     def test_get_files_and_mode_force_style(
-        self, flag: Optional[Literal["stable", "preview"]]
+        self, flag: Optional[Literal["stable", "preview", "unstable"]]
     ) -> None:
         get_files_and_mode = diff_shades.analysis.get_files_and_mode
         multi_proj = Project("multi-file-proj", "throwaway-url")
-        files, mode = get_files_and_mode(multi_proj, DATA_DIR / "multi-file-proj", flag)
-        assert mode.preview is (flag == "preview")
+        _, mode = get_files_and_mode(multi_proj, DATA_DIR / "multi-file-proj", flag)
+        assert mode.preview is (flag in {"preview", "unstable"})
+        if hasattr(mode, "unstable"):
+            assert mode.unstable is (flag == "unstable")
 
     def test_suppress_output(self, capfd: pytest.CaptureFixture) -> None:
         with diff_shades.analysis.suppress_output():
