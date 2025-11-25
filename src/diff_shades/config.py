@@ -38,7 +38,7 @@ PROJECTS: Final = [
     Project("bandersnatch", "https://github.com/pypa/bandersnatch.git"),
     Project(
         "blackbench",
-        "https://github.com/ichard26/blackbench.git",   
+        "https://github.com/ichard26/blackbench.git",
         # Uses Python 3.12+ type alias syntax
         custom_arguments=["--extend-exclude", "/src/bandersnatch/tests/test_mirror.py"],
     ),
