@@ -36,7 +36,12 @@ PROJECTS: Final = [
     Project("aioexabgp", "https://github.com/cooperlees/aioexabgp.git"),
     Project("attrs", "https://github.com/python-attrs/attrs.git"),
     Project("bandersnatch", "https://github.com/pypa/bandersnatch.git"),
-    Project("blackbench", "https://github.com/ichard26/blackbench.git"),
+    Project(
+        "blackbench",
+        "https://github.com/ichard26/blackbench.git",   
+        # Uses Python 3.12+ type alias syntax
+        custom_arguments=["--extend-exclude", "/src/bandersnatch/tests/test_mirror.py"],
+    ),
     Project("channel", "https://github.com/django/channels.git"),
     Project("diff-shades", "https://github.com/ichard26/diff-shades.git"),
     Project(
